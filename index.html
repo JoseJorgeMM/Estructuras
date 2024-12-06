@@ -3,41 +3,378 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Previsualizador de Páginas Web</title>
+    <title>Manual de Convivencia Chat</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f6f9;
             margin: 0;
             padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            height: 100vh;
-            background-color: #f4f4f9;
+            min-height: 100vh;
+            color: #333;
         }
-        header {
+        h1 {
+            background-color: #0078D7;
+            color: white;
+            padding: 20px;
+            width: 100%;
             text-align: center;
-            margin-bottom: 20px;
+            margin: 0;
         }
-        iframe {
+        #chat-container {
+            background: white;
             width: 90%;
-            height: 80%;
-            border: 2px solid #ccc;
-            border-radius: 8px;
+            max-width: 600px;
+            height: 400px;
+            overflow-y: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            padding: 15px;
+        }
+        #user-input-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            width: 90%;
+            max-width: 600px;
+        }
+        #user-input {
+            flex-grow: 1;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            padding: 10px 15px;
+            font-size: 1rem;
+        }
+        button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            background-color: #0078D7;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #005bb5;
+        }
+        .message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 10px;
+            line-height: 1.4;
+        }
+        .user-message {
+            background-color: #daf1ff;
+            text-align: right;
+            align-self: flex-end;
+        }
+        .bot-message {
+            background-color: #f1f1f1;
+        }
+        .typing-indicator {
+            color: #666;
+            font-style: italic;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Previsualizador de Páginas Web</h1>
-        <p>Inserta la URL de la página que deseas cargar dentro del código fuente.</p>
-    </header>
-    <!-- Modifica la URL dentro del atributo "src" para cargar tu página deseada -->
-    <iframe 
-        src="https://www.youtube.com/watch?v=neqw9WZLduo" 
-        title="Previsualización de Página Web" 
-        allowfullscreen>
-    </iframe>
+    <h1>Chat del Manual de Convivencia</h1>
+    <div id="chat-container"></div>
+    <div id="user-input-container">
+        <input type="text" id="user-input" placeholder="Escribe tu pregunta aquí...">
+        <button onclick="sendQuestion()">Enviar</button>
+    </div>
+
+    <script>
+        const MANUAL_DE_CONVIVENCIA_TEXT = `
+        Información completa sobre las situaciones tipo 1, 2 y 3
+Situaciones tipo 1
+Las situaciones tipo 1 son conflictos manejados inadecuadamente y situaciones esporádicas que inciden negativamente en el clima escolar. Estas situaciones no generan daños al cuerpo o a la salud. Algunos ejemplos de situaciones tipo 1 son:
+●
+Desobedecer las instrucciones u orientaciones de los docentes o directivos de la institución.
+●
+Presentarse al Colegio o a las clases con el uniforme en mal estado, incompleto o inadecuado, desconociendo las exigencias del Manual de Convivencia Escolar.
+●
+Incumplir con las tareas, trabajos, talleres, evaluaciones o actividades que se desarrollan dentro de la institución, desconociendo las exigencias del SIEE.
+●
+Utilizar inadecuadamente los espacios y elementos que se encuentran en la institución (salones de clase, biblioteca, baños, implementos deportivos, computadores, entre otros).
+●
+Interrumpir de manera sistemática el normal desarrollo de las clases o las actividades programadas con charlas, chistes, bromas, gritos, ruidos, apodos, entre otros.
+●
+Manifestar desinterés, burla o apatía en las acciones programadas por la institución en el marco para la formación de la convivencia escolar, de los derechos humanos, sexuales y reproductivos.
+●
+Emplear vocabulario soez o descortés en sus relaciones cotidianas.
+●
+Además de todos aquellos comportamientos clasificados en agresión verbal y gestual, sobre las situaciones más comunes que afectan la convivencia escolar y el ejercicio de los derechos humanos, sexuales y reproductivos.
+Situaciones tipo 2
+Las situaciones tipo 2 son conductas o comportamientos que atentan contra los principios institucionales y situaciones de agresión escolar, acoso escolar (bullying) y ciberacoso (Ciberbullying). No revisten las características de la comisión de un delito. Estas situaciones se presentan de manera repetida o sistemática o causan daños al cuerpo o a la salud sin generar incapacidad. Algunos ejemplos de situaciones tipo 2 son:
+●
+El fraude en evaluaciones y /o trabajos escritos.
+●
+Presentar el trabajo de otra persona como propio, copiado palabra por palabra. (Plagio)
+●
+Promover desórdenes en el transporte escolar y sus rutas escolares o cualquier otro lugar o actividad donde se pueda identificar como estudiante de la institución.
+●
+Hacer uso sin el debido permiso, de dispositivos electrónicos, en las aulas de clase y demás espacios de actividades escolares distintas a los descansos.
+●
+Organizar, realizar y participar en paseos y salidas, durante la jornada escolar sin el correspondiente permiso del coordinador comportamental.
+●
+Agredir verbalmente a cualquier miembro de la comunidad educativa a cualquier persona perteneciente al entorno escolar.
+●
+Incentivar las discordias y/o peleas entre los compañeros.
+●
+Filmar o tomar fotos sin el debido permiso en situaciones que atenten contra la integridad moral de la persona.
+●
+Omitir información que permita esclarecer situaciones que atenten contra el normal desarrollo de las actividades o dar información falsa a los directivos y educadores.
+Situaciones tipo 3
+Las situaciones tipo 3 son situaciones de agresión escolar que se consideran delitos contra la libertad, la integridad y la formación sexual. También se consideran situaciones tipo 3 cuando la agresión escolar constituye cualquier otro delito establecido en la Ley penal colombiana. Algunos ejemplos de situaciones tipo 3 son:
+●
+Portar, exhibir o guardar armas, explosivos u objetos con los que se pueda atentar contra la integridad física de los demás.
+●
+Portar, consumir o distribuir a cualquier título (gratuito u oneroso), dentro de la institución sustancias psicoactivas como: marihuana, cocaína, bazuco, éxtasis y demás sustancias psicotrópicas o alucinógenas, así como bebidas embriagantes.
+●
+La agresión física, atentar contra la vida e integridad personal de cualquier miembro de la comunidad educativa.
+●
+Sustracción, alteración o falsificación de documentos tales como: informes, exámenes, valoraciones, firmas o cualquier otro elemento utilizado en la institución.
+●
+Hurto en propiedad ajena y/o documentos confidenciales o de reserva para la institución como información sistematizada, software especializado, planillas de notas y libros de control.
+●
+Conformar o hacer parte de pandillas o bandas dentro o fuera de la institución con fines delictivos o para crear un mal ambiente escolar.
+●
+Acosar, provocar, abusar y violentar psicológica, física y/o sexualmente a cualquier miembro de la comunidad educativa.
+●
+Atentar contra la propiedad ajena.
+●
+Publicar escritos anónimos en contra de la institución, docentes o compañeros.
+●
+Incurrir en chantaje o acoso moral, sexual o económico en contra de cualquier miembro de la comunidad educativa.
+●
+Realización de actividades relacionadas con fenómenos como el satanismo, la hechicería, prácticas mágicas u otras contrarias a la religión católica.
+●
+Colocar fotografías propias o ajenas portando el uniforme escolar modelando posturas vulgares o eróticas. Hacer circular información de ese tipo a otras personas.
+●
+Participar en la elaboración de páginas peyorativas alusivas a la institución educativa
+●
+Escribir letreros o trazar dibujos insultantes contra superiores o compañeros ya sea dentro o fuera del plantel.
+●
+Incurrir en cualquier conducta tipificada como delito en el código penal colombiano.
+●
+Corrupción de menores.
+●
+Agredir directa o indirectamente a cualquier miembro de la comunidad educativa a través de la Internet, del celular, volantes anónimos o cualquier otro medio.
+ahora entrega todo lo que tenga que ver con las sanciones. entrega todo lo relacionado con esto sin resumir. esto servira para entrenar modelos de chatbot. no coloques citas o numeros de citas. entrega el texto plano.
+no coloques numeros romanos para las situaciones sino que debes colocar el numero 1, 2 o 3 cada vez que escribas situaciones tipo 1, situaciones tipo 2 o situaciones tipo 3.
+
+Información detallada sobre las sanciones en el Manual de Convivencia Escolar
+El Colegio podrá aplicar las siguientes estrategias formativas y sanciones de acuerdo con la gravedad de la falta cometida, a las circunstancias de tiempo, modo y lugar en los que se cometa la falta teniendo en consideración los atenuantes y los agravantes establecidos para el proceso disciplinario. Se podrán aplicar una o varias estrategias formativas y/o sanciones en un mismo evento:
+Amonestación Verbal. Diálogo reflexivo, persuasivo y formativo con el estudiante a la primera vez que incurra en una falta tipo 1.
+Amonestación escrita. Anotación en el observador del estudiante. De acuerdo a la falta esta acción correctiva puede concurrir con una sanción de las establecidas en el presente manual.
+Notificación a los padres de familia y compromiso comportamental Procede cuando el estudiante ha incurrido en faltas tipo 2 y 3, cuando la amonestación escrita concurra con una sanción o cuando el docente o coordinador lo estime conveniente. El director de grado o el profesor del área, notificarán por escrito, a los padres de familia o acudiente autorizado para dialogar, analizar en forma conjunta la situación del estudiante y buscar estrategias que permitan una adecuada normalización. De este diálogo se dejará constancia escrita y contará con la firma del coordinador, el acompañante grupal o profesor del área, los padres de familia y/o acudiente autorizado y el estudiante.
+Jornada de reflexión y/o trabajos especiales. Como estrategia formativa se podrá asignar al estudiante una jornada de reflexión con el fin de que analice su comportamiento y las consecuencias de este. La jornada podrá ser de una (1) a tres (3) horas y se realizará fuera de la jornada escolar. En dicha jornada deberá realizar un trabajo escrito que le permita reflexionar sobre la falta cometida y los correctivos necesarios para evitarla en el futuro.
+Compromiso académico. Se elabora para subsanar las faltas tipo 1 y 2 relacionadas con el incumplimiento de las responsabilidades y compromisos académicos. El estudiante firmará un compromiso académico en el cual se establecerá un plan de trabajo para nivelar sus actividades pendientes y superar las deficiencias presentadas.
+Circunstancias por las cuales se elaboran compromisos académicos o disciplinarios.
+●
+Cuando se evidencie incumplimiento en las responsabilidades académicas por parte del estudiante.
+●
+Cuando el estudiante presente bajo rendimiento académico.
+●
+Cuando se evidencie reincidencia en faltas tipo 1 y 2 que afecten la convivencia escolar.
+Evaluación y seguimiento de los compromisos. Los compromisos firmados por los estudiantes serán evaluados periódicamente por los docentes y coordinadores respectivos.
+Retención de implementos. Cuando la falta esté directamente relacionada con el uso de implementos como celulares, cámaras, aparatos reproductores de audio, revistas, impresos, drogas o armas de cualquier tipo, serán retenidos por el Coordinador de Desarrollo Humano y Pastoral, ángel Custodio, el profesor a cargo o el Rector. Estos implementos de ser necesario, serán entregados exclusivamente a los padres.
+Prohibición de representar el Colegio Se prohíbe al estudiante representar al colegio en eventos deportivos, culturales, académicos, sociales, salidas pedagógicas o cualquier otro evento que amerite la representación del colegio.
+Acciones de reivindicación y reparación de la falta Se busca que el estudiante pueda resarcir el daño o falta cometida, con trabajo comunitario, disculpas públicas o cualquier otra acción que restaure la armonía y el buen nombre del afectado y de la institución.
+Suspensión de programas especiales o de representación Como estrategia formativa, el estudiante podrá ser suspendido en su participación a programas especiales organizados por el Colegio o en los cargos de representación que esté ejerciendo.
+Asistencia a un programa de orientación y tratamiento Como estrategia formativa y de seguimiento podrá imponerse la obligación de que el estudiante asista a un programa de tratamiento terapéutico, psicológico o psiquiátrico o reciba asistencia profesional.
+Anulación de evaluaciones. El fraude en evaluaciones o trabajos académicos trae como consecuencia la anulación de la actividad evaluativa y la calificación será de desempeño bajo.
+Matrícula condicional Se utiliza cuando la Rectoría considera que la falta permite una última oportunidad, sin deteriorar en el estudiante el sentido de la norma, ni convertirse en un mensaje nocivo para la comunidad. Estará acompañada de la suscripción de compromisos académico y/o normativo.
+Evaluación y seguimiento de la matrícula condicional Se evaluarán cada periodo académico por parte del equipo de grado, siendo el coordinador de Desarrollo Humano y Pastoral el responsable de su respectivo seguimiento. El incumplimiento de los compromisos será motivo para la cancelación inmediata de la matrícula.
+Semiescolarización preventiva Se implementará como estrategia formativa y preventiva, la cual podrá ir acompañada de compromisos académicos y de convivencia que firmarán los padres de familia o acudiente autorizado y el estudiante, con el fin de que éste reflexione sobre su comportamiento y mejore sus actitudes y hábitos dentro y fuera del plantel educativo. En esta medida se podrá suspender al estudiante hasta por cinco (5) días hábiles, durante los cuales deberá presentarse al colegio en el horario que le sea asignado, para realizar talleres formativos o actividades que le sean asignadas durante la misma. Los educadores elaborarán talleres, según el horario de clases del día o días de la semiescolarización preventiva, y los entregarán a la coordinación respectiva, así mismo el coordinador entregará conjuntamente con un taller formativo. Una vez termine la semiescolarización preventiva, el estudiante debe presentarse con los talleres a la coordinación respectiva, quien los entregará a los educadores, ante quienes deberá el estudiante presentar su sustentación. Si durante el periodo de suspensión se realizan evaluaciones orales o escritas, las mismas serán aplazadas, para lo cual le serán asignadas nuevas fechas de presentación.
+Cancelación de matrícula y retiro del colegio La cancelación de la matrícula durante el desarrollo del año lectivo, es una sanción que podrá ser aplicada cuando el estudiante incurra en varias faltas tipo 2 y 3. En caso de retiro del estudiante del Colegio, cualquiera que sea el motivo, es obligación de la familia o acudiente ponerse a paz y salvo por todo concepto.
+Semiescolarización por el resto del año lectivo En casos especiales en los que el estudiante requiera un proceso reflexivo, de acompañamiento y de seguimiento se determinará la semiescolarización por el resto del año lectivo.
+Reparación de daños o perjuicios El estudiante deberá responder por los daños o perjuicios que haya ocasionado a la institución o a cualquier miembro de la comunidad educativa. La reparación de daños o perjuicios se podrá realizar a través del pago del costo de la reparación o la reposición del bien dañado.
+Sistema de responsabilidad penal para adolescentes. Cuando las faltas cometidas por el estudiante sean constitutivas de delito se dará aplicación al Sistema de Responsabilidad Penal para Adolescentes.
+ahora entrega todo lo que tenga que ver con el debido proceso. entrega todo lo relacionado con esto sin resumir. esto servira para entrenar modelos de chatbot. no coloques citas o numeros de citas. entrega el texto plano.
+no coloques numeros romanos para las situaciones sino que debes colocar el numero 1, 2 o 3 cada vez que escribas situaciones tipo 1, situaciones tipo 2 o situaciones tipo 3.
+
+Información detallada sobre el debido proceso en el Manual de Convivencia Escolar
+El debido proceso es un derecho fundamental que garantiza a todas las personas un trato justo e imparcial en cualquier procedimiento legal o administrativo que pueda afectar sus derechos. En el contexto escolar, el debido proceso se aplica a los procedimientos disciplinarios y académicos que involucran a los estudiantes.
+Objetivo del debido proceso:
+El objetivo del debido proceso es garantizar que los estudiantes tengan la oportunidad de defenderse de las acusaciones en su contra y que las decisiones que se tomen sean justas e imparciales.
+Etapas del debido proceso:
+1. Queja o conocimiento de oficio. El proceso disciplinario puede iniciarse por una queja formulada por cualquier miembro de la comunidad educativa o de oficio, cuando los hechos son conocidos directamente por un funcionario de la institución.
+2. Indagación preliminar. En esta etapa se verifica la ocurrencia de los hechos y se identifican las personas involucradas. Se puede solicitar a los involucrados que rindan su versión libre y espontánea de los hechos.
+3. Descargos. El estudiante tiene derecho a presentar sus descargos por escrito, de manera personal y sin faltar a la verdad.
+4. Si la falta es considerada tipo 1, se hace una reflexión y un compromiso con el estudiante y se consigna en el observador del estudiante.
+5. Citación al padre de familia o acudiente autorizado. Se cita al padre de familia o acudiente autorizado para informarle sobre la falta cometida por el estudiante y para que participe en el proceso disciplinario.
+6. Entrevista con el estudiante y el padre de familia o acudiente autorizado. Se realiza una entrevista con el estudiante y el padre de familia o acudiente autorizado para escuchar sus versiones de los hechos.
+7. El padre de familia o acudiente autorizado no interviene en el proceso disciplinario como contraparte, sino como garante del debido proceso y de los derechos del estudiante.
+8. Pruebas. Se pueden presentar diferentes tipos de pruebas, como testimoniales, documentales, periciales, entre otras.
+9. Estudio del caso por parte del Consejo de Coordinación. Los miembros del Consejo de Coordinación analizarán el caso y recomendarán las estrategias formativas y/o sanciones de acuerdo con el Manual de Convivencia.
+10. Resolución rectoral. El Rector tomará la decisión final mediante resolución motivada y la notificará al estudiante y a los padres de familia o acudiente autorizado.
+11. Recurso. Contra la Resolución rectoral procede el recurso de reposición.
+Interposición de recursos:
+Recurso de reposición
+El recurso de reposición tiene como finalidad la manifestación de elementos o pruebas que desvirtúen la responsabilidad del estudiante en los hechos que motivaron la sanción o la violación al debido proceso. El término para interponer el recurso es de tres (3) días hábiles siguientes a la notificación de la resolución. El recurso debe presentarse por escrito y la sustentación debe ser respetuosa y basarse en hechos o pruebas que no se tuvieron en cuenta en el proceso disciplinario.
+Si no se presenta recurso de reposición, la decisión quedará en firme transcurridos tres (3) días hábiles luego de la notificación.
+El recurso de reposición será resuelto por el Rector. La decisión del Rector sobre el recurso de reposición es definitiva y no procede ningún otro recurso.
+Mientras se resuelve el recurso de reposición, el estudiante asistirá normalmente a clases.
+Información al padre de familia o acudiente autorizado:
+El padre de familia o acudiente autorizado será informado sobre el proceso disciplinario a través de los siguientes medios:
+1.
+Comunicación escrita a través de la agenda escolar o la mensajería Gnosoft.
+2.
+Citación a través de formato de citación, agenda escolar o mensajería Gnosoft.
+3.
+Comunicación telefónica.
+4.
+Correo certificado.
+Notificación de resoluciones:
+La notificación de las resoluciones se realizará de las siguientes maneras:
+1.
+Notificación personal a través de la Coordinación de Desarrollo Humano y Pastoral.
+2.
+Notificación por correo certificado.
+Es importante destacar que el debido proceso es un derecho fundamental de los estudiantes y que el Colegio debe garantizar su cumplimiento en todo momento
+        `;
+
+        let documentChunks = [];
+
+        function chunkText(text, chunkSize = 1000, overlap = 200) {
+            const chunks = [];
+            for (let i = 0; i < text.length; i += chunkSize - overlap) {
+                chunks.push(text.slice(i, i + chunkSize));
+            }
+            return chunks;
+        }
+
+        documentChunks = chunkText(MANUAL_DE_CONVIVENCIA_TEXT);
+
+        function retrieveRelevantContext(question, chunks, topK = 3) {
+            const lowercaseQuestion = question.toLowerCase();
+            const scoredChunks = chunks.map(chunk => ({
+                chunk,
+                score: calculateRelevanceScore(lowercaseQuestion, chunk.toLowerCase())
+            }));
+
+            return scoredChunks
+                .sort((a, b) => b.score - a.score)
+                .slice(0, topK)
+                .map(item => item.chunk);
+        }
+
+        function calculateRelevanceScore(query, chunk) {
+            const queryTerms = query.split(/\s+/);
+            const matchedTerms = queryTerms.filter(term => chunk.includes(term));
+            return matchedTerms.length / queryTerms.length;
+        }
+
+        async function sendQuestion() {
+            const userInput = document.getElementById('user-input');
+            const question = userInput.value.trim();
+
+            if (!question) {
+                appendMessage('Bot', 'Por favor, escribe una pregunta.');
+                return;
+            }
+
+            appendMessage('Usuario', question);
+            const botResponseElement = appendMessage('Bot', '', 'typing');
+            userInput.value = '';
+            userInput.disabled = true;
+
+            try {
+                const relevantContexts = retrieveRelevantContext(question, documentChunks);
+                const contextString = relevantContexts.join(' ... ');
+
+                const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer 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`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: "llama3-70b-8192",
+                        messages: [
+                            {
+                                role: "system",
+                                content: `Eres un asistente que analiza el Manual de Convivencia. Si la respuesta no es clara, guía al usuario con preguntas para entender mejor su consulta o ayuda a interpretar posibles inferencias. Siempre debes responder de manera útil y proactiva.`
+                            },
+                            {
+                                role: "user",
+                                content: `Contexto: ${contextString}\n\nPregunta: ${question}`
+                            }
+                        ],
+                        temperature: 1,
+                        max_tokens: 1024,
+                        stream: true
+                    })
+                });
+
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let result = '';
+
+                botResponseElement.classList.remove('typing-indicator');
+                botResponseElement.textContent = '';
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+
+                    const chunk = decoder.decode(value);
+                    const lines = chunk.split('\n');
+
+                    for (const line of lines) {
+                        if (line.startsWith('data: ')) {
+                            try {
+                                const parsedChunk = JSON.parse(line.slice(6));
+                                if (parsedChunk.choices && parsedChunk.choices[0].delta.content) {
+                                    const content = parsedChunk.choices[0].delta.content;
+                                    result += content;
+                                    botResponseElement.textContent = result;
+                                }
+                            } catch (e) {
+                                console.error('Error parsing chunk:', e);
+                            }
+                        }
+                    }
+                }
+
+                userInput.disabled = false;
+            } catch (error) {
+                appendMessage('Bot', `Error al procesar la solicitud: ${error.message}`, 'error');
+                console.error('Detalles del error:', error);
+                userInput.disabled = false;
+            }
+        }
+
+        function appendMessage(sender, message, type = 'normal') {
+            const chatContainer = document.getElementById('chat-container');
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message');
+
+            if (sender === 'Usuario') {
+                messageElement.classList.add('user-message');
+            } else if (type === 'typing') {
+                messageElement.classList.add('bot-message', 'typing-indicator');
+                message = 'Escribiendo...';
+            } else {
+                messageElement.classList.add('bot-message');
+            }
+
+            messageElement.textContent = `${sender}: ${message}`;
+            chatContainer.appendChild(messageElement);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            return messageElement;
+        }
+    </script>
 </body>
 </html>
